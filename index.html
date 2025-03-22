@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="eu">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aukeratu Hiru Gurutz mendi ibilbidean ikusi dituzun animaliak</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+        .game-container {
+            display: flex;
+            justify-content: space-around;
+            width: 80%;
+            margin: auto;
+        }
+        .column {
+            width: 45%;
+            min-height: 500px;
+            border: 2px solid #ccc;
+            padding: 10px;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: flex-start;
+            justify-content: center;
+            background-color: #f9f9f9;
+        }
+        .column h2 {
+            width: 100%;
+            text-align: center;
+        }
+        .image-container {
+            margin: 10px;
+            padding: 5px;
+            cursor: pointer;
+            position: relative;
+        }
+        .image-container img {
+            width: 180px;
+            height: 180px;
+        }
+        .selected {
+            border: 2px solid green;
+        }
+        .incorrect::after {
+            content: "X";
+            color: red;
+            font-size: 50px;
+            font-weight: bold;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+        .correct::after {
+            content: "✔";
+            color: green;
+            font-size: 50px;
+            font-weight: bold;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+    </style>
+</head>
+<body>
+    <h1>Aukeratu Hiru Gurutz mendi ibilbidean ikusi dituzun animaliak</h1>
+    <div class="game-container">
+        <div class="column" id="imageContainer">
+            <h2>Aukeratu animaliak</h2>
+        </div>
+        <div class="column" id="selectedImages">
+            <h2>Hautatutako animaliak</h2>
+        </div>
+    </div>
+    <button onclick="checkResults()">Egiaztatu emaitza</button>
+    <button onclick="resetGame()">Berrabiarazi jokoa</button>
+    
+    <script>
+        const correctImages = ["9.jpg", "6.jpg", "4.jpg", "7.jpg"];
+        let images = ["1.jpg", "2.jpg", "3.jpg", "4.jpg", "5.jpg", "6.jpg", "7.jpg", "8.jpg", "9.jpg"];
+
+        function shuffle(array) {
+            return array.sort(() => Math.random() - 0.5);
+        }
+
+        function loadImages() {
+            const container = document.getElementById("imageContainer");
+            const selectedContainer = document.getElementById("selectedImages");
+            container.innerHTML = "";
+            selectedContainer.innerHTML = "<h2>Hautatutako animaliak</h2>";
+            
+            shuffle(images).forEach(img => {
+                const div = document.createElement("div");
+                div.classList.add("image-container");
+                div.onclick = () => moveImage(div, img);
+                
+                const image = document.createElement("img");
+                image.src = img;
+                image.alt = "Animalia";
+                
+                div.appendChild(image);
+                container.appendChild(div);
+            });
+        }
+
+        function moveImage(div, img) {
+            const selectedContainer = document.getElementById("selectedImages");
+            const imageContainer = document.getElementById("imageContainer");
+
+            if (div.parentElement === imageContainer && selectedContainer.children.length < 5) {
+                selectedContainer.appendChild(div);
+            } else if (div.parentElement === selectedContainer) {
+                imageContainer.appendChild(div);
+            }
+        }
+
+        function checkResults() {
+            document.querySelectorAll("#selectedImages .image-container").forEach(div => {
+                const imgSrc = div.querySelector("img").src.split("/").pop();
+                if (correctImages.includes(imgSrc)) {
+                    div.classList.add("correct");
+                } else {
+                    div.classList.add("incorrect");
+                }
+            });
+        }
+
+        function resetGame() {
+            loadImages();
+        }
+
+        window.onload = loadImages;
+    </script>
+</body>
+</html>
